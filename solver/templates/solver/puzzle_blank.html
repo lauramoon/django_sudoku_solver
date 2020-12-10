@@ -1,0 +1,49 @@
+{% extends "base_generic.html" %}
+{% load mathfilters %}
+
+{% block content %}
+{% if parent.name %}
+  <h2>{{ parent.name }} </h2>
+{% else %}
+  <h2>Your Puzzle</h2>
+{% endif %}
+
+{% if parent.solved %} <p>This is a valid sudoku puzzle</p>
+{% elif parent.multiple_solution %} <p>This puzzle can be completed in more than one way.</p>
+{% elif parent.too_few_clues %} <p>This puzzle has less than 17 clues.</p>
+    <p>A valid sudoku puzzle starts with at least 17 clues.</p>
+{% else %} <p>This puzzle cannot be completed.</p>
+{% endif %}
+
+
+<table class="puzzle-table">
+    <tr>
+      {% for char in parent.puzzle_string %}
+      <td class='puzzle-box box-{{forloop.counter0}} row-{{forloop.counter0|intdiv:9}}
+      column-{{forloop.counter0|mod:9}} original'>
+        {% if char == '0' %}
+        {% else %}
+        {{char}}
+        {% endif %}
+      </td>
+      {% if forloop.counter|divisibleby:"9" and forloop.counter != 81 %}
+    </tr>
+    <tr>
+      {% endif %}
+
+      {% endfor %}
+    </tr>
+  </table>
+
+{% if parent.solved %}
+    <a class="btn btn-lg btn-primary" href={% url 'puzzle-solution' uuid=parent.uuid %} role="button">View Solution</a>
+{% elif parent.multiple_solution %}
+    <a class="btn btn-lg btn-primary" href={% url 'puzzle-solution' uuid=parent.uuid %} role="button">See Two Ways to Complete</a>
+{% elif parent.no_solution %}
+    <a class="btn btn-lg btn-primary" href={% url 'puzzle-solution' uuid=parent.uuid %} role="button">See Attempt To Solve</a>
+{% else %}
+{% endif %}
+    <a class="btn btn-lg btn-primary" href={% url 'puzzle-entry' uuid=parent.uuid %} role="button">Edit puzzle</a>
+    <a class="btn btn-lg btn-primary" href={% url 'puzzle-create' %} role="button">Enter Another Puzzle</a>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base_generic.html" %}
+{% load mathfilters %}
+
+{% block content %}
+{% if parent.name %}
+  <h2>{{ parent.name }} </h2>
+{% else %}
+  <h2>Your Puzzle</h2>
+{% endif %}
+
+<div>
+
+  {% if parent.solved %}
+  <h4>Solution</h4>
+  <p>Estimated difficulty: {{parent.difficulty}}</p>
+
+  <table class="puzzle-table">
+    <tr>
+      {% for value, original in fancy_solution %}
+      <td class='puzzle-box box-{{forloop.counter0}} row-{{forloop.counter0|intdiv:9}}
+      column-{{forloop.counter0|mod:9}} {% if original != "0" %}original{% endif %}'>
+        {{value}}
+      </td>
+      {% if forloop.counter|divisibleby:"9" and forloop.counter != 81 %}
+    </tr>
+    <tr>
+      {% endif %}
+
+      {% endfor %}
+    </tr>
+  </table>
+  {% elif parent.multiple_solution %}
+  <p>Invalid puzzle: there are multiple ways to complete the puzzle. Two examples are shown below.</p>
+  <p>Note, for example, the {{parent.error_description}}</p>
+  <table class="puzzle-table">
+    <tr>
+      {% for value, original in fancy_multi_fill_1 %}
+      <td class='puzzle-box box-{{forloop.counter0}} row-{{forloop.counter0|intdiv:9}}
+      column-{{forloop.counter0|mod:9}} {% if original != "0" %}original{% endif %}'>
+        {{value}}
+      </td>
+      {% if forloop.counter|divisibleby:"9" and forloop.counter != 81 %}
+    </tr>
+    <tr>
+      {% endif %}
+
+      {% endfor %}
+    </tr>
+  </table>
+  <table class="puzzle-table">
+    <tr>
+      {% for value, original in fancy_multi_fill_2 %}
+      <td class='puzzle-box box-{{forloop.counter0}} row-{{forloop.counter0|intdiv:9}}
+      column-{{forloop.counter0|mod:9}} {% if original != "0" %}original{% endif %}'>
+        {{value}}
+      </td>
+      {% if forloop.counter|divisibleby:"9" and forloop.counter != 81 %}
+    </tr>
+    <tr>
+      {% endif %}
+
+      {% endfor %}
+    </tr>
+  </table>
+
+  {% else %}
+    {% if parent.too_few_clues %}
+   <p>Invalid puzzle: a valid puzzle starts with at least 17 clues</p>
+    {% else %}
+  <p>Unable to solve this puzzle: {{parent.error_description}}</p>
+  <p> Note: improved error explanations are under development</p>
+    {% endif %}
+    <table class="puzzle-table">
+    <tr>
+      {% for char in parent.puzzle_string %}
+      <td class='puzzle-box box-{{forloop.counter0}} row-{{forloop.counter0|intdiv:9}}
+      column-{{forloop.counter0|mod:9}} original'>
+        {% if char == '0' %}
+        {% else %}
+        {{char}}
+        {% endif %}
+      </td>
+      {% if forloop.counter|divisibleby:"9" and forloop.counter != 81 %}
+    </tr>
+    <tr>
+      {% endif %}
+
+      {% endfor %}
+    </tr>
+  </table>
+
+  {% endif %}
+  {% if parent.solved is False %}
+    <a class="btn btn-lg btn-primary"
+            href={% url 'puzzle-entry' uuid=parent.uuid %} role="button">Edit puzzle</a>
+  {% endif %}
+  {% if parent.solved or parent.multiple_solution %}
+  <a class="btn btn-lg btn-primary"
+            href={% url 'puzzle-blank' uuid=parent.uuid %} role="button">View Blank Puzzle</a>
+  {% endif %}
+    <a class="btn btn-lg btn-primary"
+            href={% url 'puzzle-create' %} role="button">Enter Another Puzzle</a>
+</div>
+{% endblock %}

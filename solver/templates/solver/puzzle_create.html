@@ -1,0 +1,31 @@
+{% extends "base_generic.html" %}
+{% load mathfilters %}
+
+{% block content %}
+  <h2>Enter a New Puzzle</h2>
+
+  <h4>Optional: Give your puzzle a name</h4>
+    <form action="" method="post">
+    {% csrf_token %}
+    <table class="enter-name">
+    {{ form.as_table }}
+    </table>
+    <input class="btn btn-lg btn-primary name-btn" type="submit" value="Create Puzzle">
+    </form>
+  <hr />
+
+  <h3>How it Works</h3>
+  <p>On the next page, you can fill in the clues for your sudoku puzzle.</p>
+  <p>Once you submit your puzzle, you will be told if it is a valid sudoku puzzle.</p>
+  <p>If it is valid, you may choose to see the solution.</p>
+  <p> If the clues you enter do not form a valid puzzle,
+  you can choose to see potentially helpful information on why it is invalid.</p>
+
+<p><em>Caution:</em> the explanations regarding invalid puzzles are still in development; don't expect then to be super useful yet.</p>
+
+  <h3>Problems?</h3>
+  <p>If you find errors or bugs, please
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSelBJWISBhbu09SxMxdeByUuIbL6e2JmED36c1MAuKP3D1LqQ/viewform?usp=sf_link"
+       target="_blank">contact</a> me. If possible, include the web address for the problem page in your message. Thank you!</p>
+
+{% endblock %}

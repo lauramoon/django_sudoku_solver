@@ -1,0 +1,44 @@
+{% extends "base_generic.html" %}
+{% load mathfilters %}
+
+{% block content %}
+
+{% if name %}
+  <h2>{{ name }}</h2>
+{% else %}
+  <h2>Your Puzzle</h2>
+{% endif %}
+<p>Enter the known values (1-9) in your puzzle here.</p>
+<p>Leave unknown cells blank.</p>
+
+<form action="" method="post">
+  {% csrf_token %}
+
+  <table class="puzzle-table">
+    <tr>
+      {{ formset.management_form }}
+      {% for form in formset %}
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        <td class='puzzle-box box-{{forloop.counter0}} row-{{forloop.counter0|intdiv:9}} column-{{forloop.counter0|mod:9}}'>
+          {{form.box_value}}
+        </td>
+        {% if forloop.counter|divisibleby:"9" and forloop.counter != 81 %}
+          </tr>
+          <tr>
+        {% endif %}
+      {% endfor %}
+    </tr>
+  </table>
+  {% for form in formset %}
+  {% if form.box_value.errors %}
+  <p class="error-location">Error in row {{forloop.counter0|intdiv:9|add:1}}, column {{forloop.counter|mod:9}}:
+  {{ form.box_value.errors }} </p>
+  {% endif %}
+  {% endfor %}
+
+  <input class="btn btn-lg btn-primary" type="submit" value="Submit">
+</form>
+
+{% endblock %}

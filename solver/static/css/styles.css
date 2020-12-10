@@ -1,0 +1,153 @@
+
+body {
+    color: #206A5D;
+    background-color: #f1f1e8;
+    text-align: center;
+    position: relative;
+    min-height: 100vh;
+}
+
+a {
+  color: #81b214;
+}
+
+a:hover {
+  color: #e1e1d8;
+}
+
+.nav-link {
+  color: #f1f1e8;
+}
+
+.navbar {
+  background-color: #206A5D;
+}
+
+.navbar-toggler-icon {
+  color: #f1f1e8;
+  margin-right: 20px;
+}
+
+.top-container {
+    background-color: #206A5D;
+    padding-top: 50px;
+    padding-bottom: 30px;
+}
+
+h1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 5em;
+  color: #bfdcae;
+}
+
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 7px dotted #81b214;
+  width: 10rem;
+}
+
+.middle-container {
+    padding-bottom: 120px;
+}
+
+.enter-name{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+  background-color: #206A5D;
+  color: #f1f1e8;
+  border-color: #bfdcae;
+}
+
+.btn-primary:hover {
+  background-color: #144C3D;
+  color: #f1f1e8;
+  border-color: #bfdcae;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0 0 0 .2rem #81b214;
+}
+
+.btn-primary.disabled {
+    color: #f1f1e8;
+    background-color: #206A5D;
+    border-color: #bfdcae;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active {
+    color: #f1f1e8;
+    background-color: #144C3D;
+    border-color: #bfdcae;
+}
+
+.btn-primary:not(:disabled):not(.disable):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active:focus {
+    box-shadow: 0 0 0 .2rem #81b214;
+}
+.puzzle-table input[type=text] {
+    width: 40px;
+    text-align: center;
+    background-color: #f1f1e8;
+    border: 0;
+}
+
+.puzzle-table {
+    border: solid #206a5d 6px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
+}
+
+.puzzle-box {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+}
+
+.row-2, .row-5 {
+    border-bottom: solid #206a5d 4px;
+}
+
+.row-0, .row-1, .row-3, .row-4, .row-6, .row-7 {
+    border-bottom: solid #206a5d 1px;
+}
+
+.column-2, .column-5 {
+    border-right: solid #206a5d 4px;
+}
+
+.column-0, .column-1, .column-3, .column-4, .column-6, .column-7 {
+    border-right: solid #206a5d 1px;
+}
+
+.original {
+    font-weight: bold;
+}
+
+.error-location {
+    margin-bottom: 0;
+}
+
+.bottom-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.link-table {
+    border: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.link-cell {
+    padding: 5px 15px;
+}
