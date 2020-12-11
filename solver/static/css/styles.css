@@ -7,6 +7,12 @@ body {
     min-height: 100vh;
 }
 
+p {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 a {
   color: #81b214;
 }
