@@ -20,12 +20,16 @@ class Puzzle:
         self.puzzle_string = puzzle_string
         # string of 81 digits representing valid, unique solution
         self.solution = ""
-        # string representing valid but not necessarily unique solution
+        # list of strings representing valid but not necessarily unique solutions
         self.valid_completion_list = []
+        # string representing the end of an attempt to solve an invalid puzzle
+        self.final_string = ""
         # dictionary of the 81 boxes in the puzzle
         self.box_map = {}
         # dictionary of the 27 row/column/square axes
         self.axis_map = {}
+        # initialized will be true if all submitted values can be validly put in puzzle
+        self.initialized = False
         self.solved = False
         # All valid puzzles have at least 17 clues initially
         self.too_few_clues = False
@@ -49,8 +53,19 @@ class Puzzle:
         for i in range(0, 81):
             value = int(puzzle_string[i])
             if value != 0:
-                self.update_new_known(i, value)
                 self.box_map[i].given = True
+                # make sure value can legally be put in this box
+                if value in self.box_map[i].tally:
+                    self.update_new_known(i, value)
+                else:
+                    self.no_solution = True
+                    self.error_description = f'Unable to initialize: ' \
+                                             f'{value} cannot be placed in row {self.box_map[i].row + 1}, ' \
+                                             f'column  {self.box_map[i].col + 1}'
+                    break
+
+        if self.no_solution is False:
+            self.initialized = True
 
     def get_axis(self, dimension, index):
         """
@@ -105,7 +120,7 @@ class Puzzle:
         # Loop through the three dimensions
         for i in range(0, 3):
             # get the axis the box is in
-            axis = i*9 + self.box_map[ID].coord[i]
+            axis = i * 9 + self.box_map[ID].coord[i]
             # remove the value from the axis unknowns
             self.axis_map[axis].unknown.discard(v)
 
@@ -118,48 +133,42 @@ class Puzzle:
         self.box_map[boxID].set_value(value)
         self.update_tallies(boxID)
         self.update_axis_unknowns(boxID)
-    
+
     def num_unknown_boxes(self):
         count = 0
         for i in range(0, 81):
             if self.box_map[i].value == 0:
                 count += 1
         return count
-        
-    def print_initial_string(self):
-        s = str()
-        for i in range(0, 81):
-            if self.box_map[i].given:
-                s += str(self.box_map[i].value)
-            else:
-                s += str(0)
-        print("Initial string: ", s)
 
-    def print_current_string(self):
+    def print_initial_string(self):
+        print("Initial string: ", self.puzzle_string)
+
+    def get_current_string(self):
         s = str()
         for i in range(0, 81):
             s += str(self.box_map[i].value)
-        print("Current string: ", s)
+        return s
+
+    def print_current_string(self):
+        print("Current string: ", self.get_current_string())
 
     def print_solution_string(self):
-        s = self.solution
-        print("Final string: ", s)
+        print("Final string: ", self.solution)
 
     def set_solution_string(self):
         if self.num_unknown_boxes() == 0:
-            s = str()
-            for i in range(0, 81):
-                s += str(self.box_map[i].value)
-            self.solution = s
+            self.solution = self.get_current_string()
 
         else:
             print("Puzzle not yet solved; no solution string")
 
+    def set_final_string(self):
+        self.final_string = self.get_current_string()
+
     def add_valid_completion(self):
         if self.num_unknown_boxes() == 0:
-            s = str()
-            for i in range(0, 81):
-                s += str(self.box_map[i].value)
+            s = self.get_current_string()
             if s not in self.valid_completion_list:
                 self.valid_completion_list.append(s)
             if len(self.valid_completion_list) >= 2:
@@ -175,48 +184,45 @@ class Puzzle:
                 self.multiple_solution = True
 
     def print_pic(self, version):
+        # get string for identified version of puzzle to print
+        if version == 'blank':
+            s = self.puzzle_string
+        elif version == "solution":
+            s = self.solution
+        elif version == "completion0":
+            s = self.valid_completion_list[0]
+        elif version == "completion1":
+            s = self.valid_completion_list[1]
+        elif version == "final":
+            s = self.final_string
+        else:
+            s = self.get_current_string()
+
         # replace zeros with blanks for display of puzzle
-        print_list = []
-        for i in range(81):
-
-            if version == "blank":
-                box_value = self.puzzle_string[i]
-            elif version == "solution":
-                box_value = self.solution[i]
-            elif version == "completion0":
-                box_value = self.valid_completion_list[0][i]
-            elif version == "completion1":
-                box_value = self.valid_completion_list[1][i]
-            else:
-                box_value = str(self.box_map[i].value)
-
-            if box_value == 0:
-                print_list.append(" ")
-            else:
-                print_list.append(box_value)
+        print_list = s.replace('0', ' ')
 
         # define rows that don't depend on puzzle values
         # width in characters
         w = 59
         # thick and thin horizontal lines, with verticals where appropriate
-        thick_outer = "="*w
-        thick_inner = "||" + ((("="*5) + "|")*2 + ("="*5) + "||")*3
-        thin = "||" + ((("-"*5) + "|")*2 + ("-"*5) + "||")*3
+        thick_outer = "=" * w
+        thick_inner = "||" + ((("=" * 5) + "|") * 2 + ("=" * 5) + "||") * 3
+        thin = "||" + ((("-" * 5) + "|") * 2 + ("-" * 5) + "||") * 3
 
         # print the top horizontal, then loop three times
         print(thick_outer)
         for i in range(0, 3):
-            j = i*3
+            j = i * 3
             # print(spaces)
             print_row(j, print_list)
             # print(spaces)
             print(thin)
             # print(spaces)
-            print_row(j+1, print_list)
+            print_row(j + 1, print_list)
             # print(spaces)
             print(thin)
             # print(spaces)
-            print_row(j+2, print_list)
+            print_row(j + 2, print_list)
             # print(spaces)
             if i == 2:
                 print(thick_outer)

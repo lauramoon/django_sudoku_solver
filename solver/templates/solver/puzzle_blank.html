@@ -40,7 +40,7 @@
 {% elif parent.multiple_solution %}
     <a class="btn btn-lg btn-primary" href={% url 'puzzle-solution' uuid=parent.uuid %} role="button">See Two Ways to Complete</a>
 {% elif parent.no_solution %}
-    <a class="btn btn-lg btn-primary" href={% url 'puzzle-solution' uuid=parent.uuid %} role="button">See Attempt To Solve</a>
+    <a class="btn btn-lg btn-primary" href={% url 'puzzle-solution' uuid=parent.uuid %} role="button">Why Not?</a>
 {% else %}
 {% endif %}
     <a class="btn btn-lg btn-primary" href={% url 'puzzle-entry' uuid=parent.uuid %} role="button">Edit puzzle</a>

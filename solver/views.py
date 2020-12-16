@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 from solver.forms import BoxFormSet, BoxValueFormSet
-from .moonsolver.solver import simple_solve
+from .moonsolver.solver import solve_puzzle
 import uuid
 
 
@@ -39,6 +39,8 @@ class PuzzleSolutionView(generic.DetailView):
         if parent.multiple_solution:
             context['fancy_multi_fill_1'] = zip(parent.multi_fill_1, parent.puzzle_string)
             context['fancy_multi_fill_2'] = zip(parent.multi_fill_2, parent.puzzle_string)
+        if parent.no_solution:
+            context['fancy_solve_attempt'] = zip(parent.solve_attempt, parent.puzzle_string)
         return context
 
     def get_object(self, queryset=None):
@@ -83,14 +85,16 @@ def enter_puzzle(request, uuid):
             parent.puzzle_string = ''.join(value_list)
             parent.save()
 
-            puzzle = simple_solve(parent.puzzle_string, parent.name)
+            puzzle = solve_puzzle(parent.puzzle_string, parent.name)
             parent.solved = puzzle.solved
             parent.no_solution = puzzle.no_solution
+            parent.initialized = puzzle.initialized
             parent.multiple_solution = puzzle.multiple_solution
             parent.too_few_clues = puzzle.too_few_clues
             parent.error_description = puzzle.error_description
             parent.puzzle_solution = puzzle.solution
             parent.difficulty = puzzle.difficulty
+            parent.solve_attempt = puzzle.final_string
             if puzzle.multiple_solution:
                 parent.multi_fill_1 = puzzle.valid_completion_list[0]
                 parent.multi_fill_2 = puzzle.valid_completion_list[1]

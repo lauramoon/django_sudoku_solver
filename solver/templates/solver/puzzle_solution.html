@@ -63,12 +63,33 @@
     </tr>
   </table>
 
+  {% elif parent.no_solution and parent.initialized %}
+     <p>Unable to solve this puzzle: {{parent.error_description}}</p>
+  <table class="puzzle-table">
+    <tr>
+      {% for value, original in fancy_solve_attempt %}
+      <td class='puzzle-box box-{{forloop.counter0}} row-{{forloop.counter0|intdiv:9}}
+      column-{{forloop.counter0|mod:9}} {% if original != "0" %}original{% endif %}'>
+        {% if value == '0' %}
+        {% else %}
+        {{value}}
+        {% endif %}
+      </td>
+      {% if forloop.counter|divisibleby:"9" and forloop.counter != 81 %}
+    </tr>
+    <tr>
+      {% endif %}
+
+      {% endfor %}
+    </tr>
+  </table>
   {% else %}
     {% if parent.too_few_clues %}
-   <p>Invalid puzzle: a valid puzzle starts with at least 17 clues</p>
+      <p>Invalid puzzle: a valid puzzle starts with at least 17 clues</p>
+    {% elif parent.initialized is False %}
+      <p>{{parent.error_description}}</p>
     {% else %}
-  <p>Unable to solve this puzzle: {{parent.error_description}}</p>
-  <p> Note: improved error explanations are under development</p>
+      <p>Something went wrong and there is no error message to report</p>
     {% endif %}
     <table class="puzzle-table">
     <tr>

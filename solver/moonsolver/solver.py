@@ -4,23 +4,26 @@ from .guess_methods import guess_recursive
 from .puzzle import Puzzle
 
 
-def simple_solve(puzzle_string, puzzle_name):
-    current_puzzle = Puzzle(puzzle_name, puzzle_string)
-    solve_puzzle(current_puzzle)
-    return current_puzzle
-
-
-def solve_puzzle(p):
+def solve_puzzle(puzzle_string, puzzle_name):
     """
-    Try to solve the puzzle with the various methods defined above. First check that enough clues
+    Try to solve the puzzle with the various methods in the methods scripts. First check that enough clues
     were provided for it to possibly be a valid puzzle. Then use the basic methods. If not solved,
     try the advanced methods, and finally guess if necessary.
-    :param p: the puzzle
+    :param puzzle_string: the string representing the puzzle
+    :param puzzle_name: the name for the puzzle
+    :return: the puzzle analyzed
     """
+    # create puzzle
+    p = Puzzle(puzzle_name, puzzle_string)
+
+    # Check for errors detected in initialization
+    if p.no_solution:
+        return p
+
     # First check that at least 17 clues were provided
     if p.num_unknown_boxes() >= 65:
         p.too_few_clues = True
-        return
+        return p
 
     # use the two standard methods to get as far as possible
     basic_solve_attempt(p)
@@ -31,7 +34,7 @@ def solve_puzzle(p):
 
     # if solution or error found, nothing more to do
     if p.solved or p.no_solution:
-        return
+        return p
 
     # Try advanced algorithmic methods
     while p.solved is False:
@@ -49,7 +52,7 @@ def solve_puzzle(p):
         p.difficulty = "Medium"
 
     if p.solved or p.no_solution:
-        return
+        return p
 
     # if not yet solved and no error found, guess
     guess_recursive(p, 0)
@@ -57,3 +60,5 @@ def solve_puzzle(p):
     # if guessing solved it, label Difficult
     if p.solved:
         p.difficulty = "Difficult"
+
+    return p

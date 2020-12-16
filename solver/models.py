@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
-from .moonsolver.solver import simple_solve
+from .moonsolver.solver import solve_puzzle
 import uuid
 
 
@@ -31,11 +31,13 @@ class Parent(models.Model):
     try_solve = models.BooleanField(default=False)
     solved = models.BooleanField(default=False)
     too_few_clues = models.BooleanField(default=False)
+    initialized = models.BooleanField(default=False)
     no_solution = models.BooleanField(default=False)
     multiple_solution = models.BooleanField(default=False)
     multi_fill_1 = models.CharField(max_length=81, default="0" * 81)
     multi_fill_2 = models.CharField(max_length=81, default="0" * 81)
     puzzle_solution = models.CharField(max_length=81, default="0" * 81)
+    solve_attempt = models.CharField(max_length=81, default='0' * 81)
     error_description = models.CharField(max_length=100, default="", blank=True)
     difficulty = models.CharField(max_length=20, default='', blank=True)
 
@@ -43,7 +45,7 @@ class Parent(models.Model):
         not_created = not self.uuid
         print("Not created")
         if self.try_solve:
-            self.solved, self.puzzle_solution = simple_solve(self.puzzle_string, self.name)
+            self.solved, self.puzzle_solution = solve_puzzle(self.puzzle_string, self.name)
             self.try_solve = False
         if self.create_string:
             value_list = [0]*81
